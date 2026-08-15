@@ -9,7 +9,7 @@
   const USE_OPTION = 'A';
 
   // OPTION A: Direct URL string
-  const DIRECT_URL = 'https://example.com';
+  const DIRECT_URL = 'https://ihateovercloaked.zinko.uk/';
 
   // OPTION B: ASCII character codes array
   // Default below decodes to "https://example.com"

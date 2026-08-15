@@ -3,8 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Embed</title>
+  <title></title>
+
+  <!-- Block Search Engines and Bots from Indexing or Following Links -->
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="bingbot" content="noindex, nofollow, noarchive, nosnippet">
+
+  <!-- Prevent Browsers and Proxies from Caching the Page -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+
   <style>
+    /* Full reset to avoid layout shifts or scrollbars */
     html, body {
       margin: 0;
       padding: 0;
@@ -16,6 +28,7 @@
   </style>
 </head>
 <body>
+  <!-- Dynamically injected via app.js -->
   <script src="app.js"></script>
 </body>
 </html>

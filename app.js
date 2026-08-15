@@ -1,5 +1,5 @@
 (function () {
-  const targetUrl = 'https://example.com';
+  const targetUrl = 'https://ihateovercloaked.zinko.uk/';
 
   const iframe = document.createElement('iframe');
   iframe.src = targetUrl;

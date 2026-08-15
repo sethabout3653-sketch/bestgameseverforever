@@ -58,9 +58,10 @@
   };
 
   // =========================================================================
-  // 3. UI INTERACTION LOCKOUT
+  // 3. UI INTERACTION LOCKOUT & POPUP INTERCEPTION
   // =========================================================================
   const lockInteractions = () => {
+    // Prevent common DevTools / View Source shortcuts
     window.addEventListener(
       'keydown',
       (e) => {
@@ -77,10 +78,15 @@
     );
 
     window.addEventListener('contextmenu', (e) => e.preventDefault(), true);
+
+    // Intercept programmatic window.open calls on the root context
+    window.open = function () {
+      return null;
+    };
   };
 
   // =========================================================================
-  // 4. MAIN EMBEDDED IFRAME CONSTRUCTOR
+  // 4. MAIN EMBEDDED IFRAME CONSTRUCTOR (RESTRICTED SANDBOX)
   // =========================================================================
   const buildSecureFrame = () => {
     const iframe = document.createElement('iframe');
@@ -102,14 +108,15 @@
     iframe.setAttribute('webkitallowfullscreen', 'true');
     iframe.setAttribute('mozallowfullscreen', 'true');
 
-    iframe.setAttribute(
-      'allow',
-      'fullscreen; autoplay; clipboard-write; encrypted-media; picture-in-picture; camera; microphone; display-capture; geolocation'
-    );
+    // Minimal operational permissions - blocked camera, microphone, geolocation
+    iframe.setAttribute('allow', 'fullscreen; autoplay; encrypted-media; picture-in-picture');
 
+    // RESTRICTED SANDBOX:
+    // Omitted 'allow-popups' and 'allow-popups-to-escape-sandbox' to prevent opening new tabs.
+    // Omitted 'allow-top-navigation' and 'allow-top-navigation-by-user-activation' to prevent redirecting host window.
     iframe.setAttribute(
       'sandbox',
-      'allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-downloads allow-orientation-lock allow-pointer-lock allow-presentation allow-top-navigation'
+      'allow-scripts allow-same-origin allow-forms allow-modals allow-downloads allow-orientation-lock allow-pointer-lock allow-presentation'
     );
 
     return iframe;

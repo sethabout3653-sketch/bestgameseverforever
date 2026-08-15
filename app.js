@@ -1,6 +1,6 @@
 (function () {
   // Target URL to embed
-  const targetUrl = 'https://https://ihateovercloaked.zinko.uk/';
+  const targetUrl = 'https://ihateovercloaked.zinko.uk/';
 
   // Basic bot/crawler detection based on user-agent strings
   const userAgent = navigator.userAgent.toLowerCase();

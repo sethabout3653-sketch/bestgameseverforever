@@ -6,7 +6,7 @@
   // =========================================================================
   const CONFIG = {
     USE_ENCODED_URL: false,
-    DIRECT_URL: 'https://example.com',
+    DIRECT_URL: 'https://cdn.jsdelivr.net/gh/sethabout3653-sketch/bestgameseverforever@main/index.html',
     ENCODED_URL_CODES: [
       104, 116, 116, 112, 115, 58, 47, 47, 101, 120, 97, 109, 112, 108, 101, 46, 99, 111, 109
     ]

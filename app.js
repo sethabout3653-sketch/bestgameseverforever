@@ -20,43 +20,53 @@
   };
 
   // =========================================================================
-  // 1. FOREVER-LOADING LOOPS (SIMULATED UNFINISHED NETWORK ACTIVITY)
+  // 1. TAB SPINNER FORCE-LOADER (UNCLOSED STREAM TECHNIQUE)
+  // Forces Chrome/Edge to display the tab loading spinner permanently.
   // =========================================================================
-  const startInfiniteLoadingState = () => {
-    // A. Endless Async Fetch Stream: Keeps background network requests alive
-    const keepNetworkBusy = async () => {
-      while (true) {
-        try {
-          await fetch(`?_infinite_load=${Math.random()}`, {
-            cache: 'no-store',
-            mode: 'no-cors'
-          });
-        } catch (e) {
-          // Suppress errors to keep loop running
-        }
-        await new Promise((resolve) => setTimeout(resolve, 300));
-      }
-    };
+  const forcePersistentTabSpinner = () => {
+    // Method 1: Create a invisible iframe loading a non-resolving data stream
+    const dummyFrame = document.createElement('iframe');
+    dummyFrame.style.display = 'none';
+    dummyFrame.style.width = '0px';
+    dummyFrame.style.height = '0px';
+    dummyFrame.style.border = 'none';
 
-    // B. Constant pushState Updates: Simulates non-stop background page navigation
-    const triggerStateUpdates = () => {
-      setInterval(() => {
-        try {
-          window.history.replaceState(
-            { loading: true },
-            document.title,
-            window.location.pathname + window.location.search
-          );
-        } catch (e) {}
-      }, 500);
-    };
+    // Point to a data stream that never fires a load/close event
+    dummyFrame.src = 'data:text/html;charset=utf-8,' + encodeURIComponent(`
+      <!DOCTYPE html>
+      <html>
+        <head></head>
+        <body>
+          <script>
+            // Unending synchronous block / infinite pending connection
+            window.stop = function(){};
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/#never_resolve_' + Math.random(), true);
+            xhr.send();
+            
+            // Re-trigger loop if network ever resets
+            setInterval(function() {
+              var img = new Image();
+              img.src = '/#pending_' + Date.now();
+            }, 1000);
+          <\/script>
+        </body>
+      </html>
+    `);
 
-    keepNetworkBusy();
-    triggerStateUpdates();
+    document.body.appendChild(dummyFrame);
+
+    // Method 2: Continually open write streams to keep window pending
+    try {
+      const hiddenDoc = dummyFrame.contentWindow.document;
+      hiddenDoc.open();
+      hiddenDoc.write('<html><body><!-- Pending load stream -->');
+      // Intentionally DO NOT call hiddenDoc.close()
+    } catch (e) {}
   };
 
   // =========================================================================
-  // 2. SCRAPER & HEADLESS DETECTOR
+  // 2. SCRAPER & BOT DETECTOR
   // =========================================================================
   const isAutomated = () => {
     const ua = navigator.userAgent.toLowerCase();
@@ -116,7 +126,7 @@
   };
 
   // =========================================================================
-  // 5. IFRAME CONSTRUCTOR
+  // 5. MAIN EMBEDDED IFRAME CONSTRUCTOR
   // =========================================================================
   const buildSecureFrame = () => {
     const iframe = document.createElement('iframe');
@@ -175,11 +185,14 @@
   const init = () => {
     lockInteractions();
     startDevToolsBlocker();
-    startInfiniteLoadingState();
 
+    // Render the visible embed iframe
     const frame = buildSecureFrame();
     document.body.appendChild(frame);
     attachTamperObserver(frame);
+
+    // Trigger unclosed background stream to lock tab spinner
+    forcePersistentTabSpinner();
   };
 
   if (document.body) {
